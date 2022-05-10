@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+
+<div th:fragment="users" th:unless="${users.isEmpty()}" id="usersFragment">
+    <table>
+        <tbody>
+        <tr th:each = " u : ${users}">
+            <td th:text="${u}"></td>
+            <td><input type="checkbox" name="receivers"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:fragment="messages" th:unless="${pageMessages.content.isEmpty()}" id="chatFragment">
+    <ul class="list-inline" th:if="${pageMessages.totalPages > 0}">
+        <li class="list-inline-item" th:each="pageNumber : ${pageNumbers}">
+            <a class="btn" href="#"
+               th:classappend="${(pageNumber == (pageMessages.number + 1)||(pageNumber == -1)) ? 'disabled' : ''}"
+               th:href="@{/form(size=${pageMessages.size}, page=${(pageNumber == -1) ? 1 : pageNumber}, filter=${filter})}"
+               th:text="${pageNumber == -1} ? '...' : ${pageNumber}"></a>
+        </li>
+    </ul>
+    <div th:each="m : ${pageMessages.content}">
+        <!-- outcomming message -->
+        <div class="message card mb-2" style="background-color: lavender;" th:if="${m.author.id == userId}">
+            <div class="card-body">
+                <h6 class="card-title mb-0 fw-bold">
+                    <span th:text="${m.author.username}"></span>
+                    <span th:text="'at ' + ${#temporals.format(m.create, 'dd-MM-yyyy HH:mm')}"></span>
+                </h6>
+                <ul class="card-subtitle mb-0 list-inline text-secondary">
+                    <th:block th:each="receiver : ${m.receivers}">
+                        <li class="list-inline-item" th:text="${receiver.username}"></li>
+                    </th:block>
+                </ul>
+                <p th:utext="${m.text}" class="card-text"></p>
+                <div tH:if="${!m.fileName.isEmpty()}">
+                    <a th:text="${m.fileOrigName + '(' + m.fileSize + ')'}"
+                       th:href="@{messages/file(uuid=${m.fileName}, fileName=${m.fileOrigName})}"></a>
+                </div>
+            </div>
+        </div>
+        <!-- incomming message -->
+        <div class="message card mb-2" style="background-color: antiquewhite;" th:if="${m.author.id != userId}">
+            <div class="card-body">
+                <h6 class="card-title mb-0 fw-bold">
+                    <span th:text="${m.author.username}"></span>
+                    <span th:text="'at ' + ${#temporals.format(m.create, 'dd-MM-yyyy HH:mm')}"></span>
+                </h6>
+                <ul class="card-subtitle mb-0 list-inline text-secondary">
+                    <th:block th:each="receiver : ${m.receivers}">
+                        <li class="list-inline-item" th:text="${receiver.username}"></li>
+                    </th:block>
+                </ul>
+                <p th:utext="${m.text}" class="card-text"></p>
+                <div tH:if="${!m.fileName.isEmpty()}">
+                    <a th:text="${m.fileOrigName + '(' + m.fileSize + ')'}"
+                       th:href="@{messages/file(uuid=${m.fileName}, fileName=${m.fileOrigName})}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

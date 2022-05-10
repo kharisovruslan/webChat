@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<div class="container">
+    <form th:action="@{/users/registration}" th:object="${user}" method="post"
+          oninput='password.setCustomValidity(password.value != passwordConfirm.value ? "Passwords do not match." : "")'>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="row">
+            <div class="col-md-12"><h1 th:text="#{label_registration}">Registration</h1></div>
+            <div class="form-outline mb-4">
+                <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="alert-danger" />
+                <label class="form-label" for="username" th:text="#{label_login}">Login</label>
+                <input type="text" id="username" name="username" th:field="*{username}" class="form-control form-control-lg"
+                       placeholder="Enter a valid login name"/>
+                <small class="dangealert alert-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+            </div>
+            <div class="form-outline mb-4">
+                <label class="form-label" for="password" th:text="#{label_password}">Password</label>
+                <input type="password" id="password" name="password" class="form-control form-control-lg"
+                       placeholder="Enter password"/>
+                <small class="dangealert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+            </div>
+            <div class="form-outline mb-4">
+                <label class="form-label" for="passwordConfirm" th:text="#{label_configrm}">Confirm</label>
+                <input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control form-control-lg"
+                       placeholder="Confirm password"/>
+                <small id="passwordConfirmHelp" class="form-text text-muted">Please confirm password</small>
+            </div>
+            <div class="text-center text-lg-start mt-4 pt-2">
+                <button type="submit" class="btn btn-primary btn-lg"
+                        style="padding-left: 2.5rem; padding-right: 2.5rem;">Registration</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/form">WebChat</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a th:href="@{/profile}" class="nav-link"><span
+                                    sec:authentication="name"></span></a>
+                        </li>
+                        <li class="nav-item">
+                            <form th:method="post" th:action="@{/logout}">
+                                <input type="submit" class="btn btn-link nav-link" th:value="#{link_logout}"/>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <form th:action="@{/users/profile}" th:object="${user}" method="post"
+              oninput='password.setCustomValidity(password.value != passwordConfirm.value ? "Passwords do not match." : "")'>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="row">
+                <div class="col-md-12"><h1>Profile</h1></div>
+                <div class="form-outline mb-4">
+                    <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="alert-danger"/>
+                    <label class="form-label" for="username">Login</label>
+                    <input type="text" id="username" name="username" th:field="*{username}" readonly="readonly"
+                           class="form-control form-control-lg"
+                           placeholder="Enter a valid login name"/>
+                    <small class="dangealert alert-danger" th:if="${#fields.hasErrors('username')}"
+                           th:errors="*{username}"></small>
+                </div>
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control form-control-lg"
+                           placeholder="Enter password"/>
+                    <small class="dangealert alert-danger" th:if="${#fields.hasErrors('password')}"
+                           th:errors="*{password}"></small>
+                </div>
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="passwordConfirm">Confirm</label>
+                    <input type="password" id="passwordConfirm" name="passwordConfirm"
+                           class="form-control form-control-lg"
+                           placeholder="Confirm password"/>
+                    <small id="passwordConfirmHelp" class="form-text text-muted">Please confirm password</small>
+                </div>
+                <div class="text-center text-lg-start mt-4 pt-2">
+                    <button type="submit" class="btn btn btn-danger"
+                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Update
+                    </button>
+                    <a class="btn btn-primary" th:href="@{/form}">WebChat</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+</body>
+</html>
