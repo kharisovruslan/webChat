@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,10 +68,11 @@ public class UserService implements UserDetailsService {
                 .map(User::getUsername).collect(Collectors.toList());
     }
 
-    public Set<User> getUsers(User exceptUser) {
+    public List<User> getUsers(User exceptUser) {
         return repository.findAll().stream()
                 .filter(u -> u.getUsername().compareToIgnoreCase(exceptUser.getUsername()) != 0)
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(User::getUsername))
+                .collect(Collectors.toList());
     }
 
     @Override
