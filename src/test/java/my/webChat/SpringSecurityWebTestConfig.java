@@ -20,9 +20,11 @@ public class SpringSecurityWebTestConfig {
     @Primary
     public UserDetailsService userDetailsService() {
         User basicUser = new User("user1", "password");
+        basicUser.setId(1L);
         basicUser.setRoles(Collections.singleton(Role.USER));
         basicUser.setEnable(true);
         User managerUser = new User("user2", "password");
+        managerUser.setId(2L);
         managerUser.setRoles(Collections.singleton(Role.USER));
         managerUser.setEnable(true);
         return new UserDetailsService() {

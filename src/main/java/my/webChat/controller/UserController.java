@@ -40,10 +40,25 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("changePassword")
-    public String changePasswordAdministrator(@RequestParam("userid") User user,
-                                              @RequestParam("password") String password, Model model) {
+    public String changePasswordAdministrator(@RequestParam("useridCP") User user,
+                                              @RequestParam("passwordCP") String password, Model model) {
         userService.updatePassword(user, password);
-        return "redirect:/form";
+        return "redirect:/statistics";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("changeUserName")
+    public String changeUserNameAdministrator(@RequestParam("useridCUN") User user,
+                                              @RequestParam("usernameCUN") String username, Model model) {
+        userService.updateUserName(user, username);
+        return "redirect:/statistics";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("changeToken")
+    public String changeTokenAdministrator(@RequestParam("useridCT") User user, Model model) {
+        userService.updateToken(user);
+        return "redirect:/statistics";
     }
 
     @PostMapping("profile")
@@ -72,9 +87,10 @@ public class UserController {
         if (userService.addUser(user)) {
             logService.addLog("add new user " + user.getUsername(), request.getRemoteAddr());
             return "redirect:login";
+        } else {
+            bindingResult.addError(new ObjectError("globalError", "user exist"));
+            logService.addLog("add new user error user exist " + user.getUsername(), request.getRemoteAddr());
+            return "registration";
         }
-        bindingResult.addError(new ObjectError("globalError", "user exist"));
-        logService.addLog("add new user error user exist " + user.getUsername(), request.getRemoteAddr());
-        return "registration";
     }
 }

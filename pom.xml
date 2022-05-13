@@ -75,11 +75,11 @@
 			<version>2.7</version>
 		</dependency>
 
-		<!--<dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>-->
+		</dependency>
 
 		<dependency>
 			<groupId>org.hsqldb</groupId>

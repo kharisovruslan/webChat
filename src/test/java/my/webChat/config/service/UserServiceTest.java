@@ -1,5 +1,7 @@
 package my.webChat.config.service;
 
+import my.webChat.controller.MessageAPI;
+import my.webChat.data.MessageRepository;
 import my.webChat.data.Role;
 import my.webChat.data.User;
 import my.webChat.data.UserRepository;
@@ -18,7 +20,8 @@ class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    MessageRepository messageRepository;
     @Autowired
     UserService userService;
 

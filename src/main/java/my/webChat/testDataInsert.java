@@ -1,5 +1,7 @@
-package my.webChat.data;
+package my.webChat;
 
+import my.webChat.data.User;
+import my.webChat.data.UserRepository;
 import my.webChat.service.MessageService;
 import my.webChat.service.UserService;
 import org.slf4j.Logger;
@@ -9,9 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -73,7 +73,7 @@ public class testDataInsert {
             userService.addUser(new User("user5", "1234"));
             users = userRepository.findAll();
             try {
-                Files.walkFileTree(Path.of("S:\\fortune"), new SimpleFileVisitor<>() {
+                Files.walkFileTree(Path.of("fortune"), new SimpleFileVisitor<>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         log.info("load " + file);

@@ -19,10 +19,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.security.Principal;
 import java.util.*;
@@ -95,9 +99,10 @@ public class MessageController {
     @ResponseBody
     public ResponseEntity<byte[]> messageFile(@AuthenticationPrincipal User user,
                                               @RequestParam(name = "uuid") String uuid,
-                                              @RequestParam(name = "fileName") String fileName) throws IOException {
+                                              @RequestParam(name = "fileName") String fileName) throws IOException, URISyntaxException {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-disposition", "attachment; filename=" + fileName);
+        String contentDisposition = "attachment; filename*=UTF-8''" + UriUtils.encodePath(fileName, "UTF-8");
+        headers.set("Content-disposition", contentDisposition);
         return ResponseEntity.ok().headers(headers).body(service.sendFile(uuid));
     }
 }

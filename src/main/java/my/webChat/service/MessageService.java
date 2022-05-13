@@ -2,6 +2,7 @@ package my.webChat.service;
 
 import my.webChat.data.Message;
 import my.webChat.data.MessageRepository;
+import my.webChat.data.dto.StatisticsUser;
 import my.webChat.data.User;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -18,9 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +33,7 @@ public class MessageService {
     @Autowired
     EntityManager em;
     private static final Logger log = LoggerFactory.getLogger(MessageService.class);
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss SSS");
 
     public Message addMessage(String text, User author, Set<User> receivers, String fileName,
                               String fileOrigName, long fileSize) {
@@ -57,6 +58,21 @@ public class MessageService {
 
     public String getLastID(User user) {
         return Long.toString(messageRepository.findFirstByAuthorOrReceiversOrderByCreateDesc(user, user).map(Message::getId).orElse(0L));
+    }
+
+    public String getLastTime(User user) {
+        return messageRepository.findFirstByReceiversOrderByCreateDesc(user)
+                .map(Message::getCreate)
+                .orElse(LocalDateTime.now()).format(dateTimeFormatter);
+    }
+
+    public List<Message> getUserMessagesAfter(User user, String afterTime) {
+        LocalDateTime after = LocalDateTime.parse(afterTime, dateTimeFormatter);
+        List<Message> messages = messageRepository.findDistinctByReceiversAndCreateAfterOrderByCreateDesc(user, after);
+        if (messages.size() > 1) {
+            messages.remove((messages.size() - 1));
+        }
+        return messages;
     }
 
     public byte[] sendFile(String uuid) throws IOException {
@@ -90,8 +106,9 @@ public class MessageService {
         return "";
     }
 
-    public Map<User, String> getStatisticsSendMessages() {
-        return messageRepository.getStatistics().stream()
-                .collect(Collectors.toMap(a -> (User) a[0], a -> Long.toString((long) a[1])));
+    public List<StatisticsUser> getStatisticsSendMessages() {
+        return messageRepository.getStatistics().stream().map(a -> {
+            return new StatisticsUser((User) a[0], 0, (Long) a[1]);
+        }).sorted().collect(Collectors.toList());
     }
 }

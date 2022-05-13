@@ -1,9 +1,7 @@
 package my.webChat.config.service;
 
-import my.webChat.data.Message;
-import my.webChat.data.MessageRepository;
-import my.webChat.data.User;
-import my.webChat.data.UserRepository;
+import my.webChat.data.*;
+import my.webChat.data.dto.StatisticsUser;
 import my.webChat.service.MessageService;
 import my.webChat.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @SpringBootTest
@@ -55,7 +52,7 @@ class MessageServiceTest {
         List<Message> u3Messages = messageService.findAuthorMessageOrMessageForUser(u3, page).getContent();
         Assertions.assertEquals(3, u3Messages.size());
         Assertions.assertEquals(7, u3Messages.get(0).getId());
-        Map<User, String> statistics = messageService.getStatisticsSendMessages();
+        List<StatisticsUser> statistics = messageService.getStatisticsSendMessages();
         Assertions.assertNotNull(statistics);
         Assertions.assertEquals(3, statistics.size());
 

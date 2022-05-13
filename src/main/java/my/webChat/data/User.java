@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ChatUsers")
@@ -35,6 +36,9 @@ public class User implements UserDetails {
 
     @Column(name = "lastVisited")
     private LocalDateTime visited;
+
+    @Column(name = "token")
+    private UUID token;
     private Boolean enable;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

@@ -5,6 +5,9 @@ import my.webChat.data.User;
 import my.webChat.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,7 @@ public class UserService implements UserDetailsService {
         if (optionalUser.isEmpty()) {
             user.setEnable(true);
             user.setPassword(encoder.encode(user.getPassword()));
+            user.setToken(UUID.randomUUID());
             repository.save(user);
             return true;
         }
@@ -53,6 +54,12 @@ public class UserService implements UserDetailsService {
     public void updatePassword(User user, String password) {
         if (StringUtils.hasText(password)) {
             user.setPassword(encoder.encode(password));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User userD = (User) userDetails;
+            if(userD.getId().equals(user.getId())) {
+                userD.setPassword(user.getPassword());
+            }
             repository.save(user);
         }
     }
@@ -82,5 +89,38 @@ public class UserService implements UserDetailsService {
 
     public Set<User> getUsers() {
         return repository.findAll().stream().collect(Collectors.toSet());
+    }
+
+    public void updateUserName(User user, String username) {
+        if (StringUtils.hasText(username)) {
+            user.setUsername(username);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User userD = (User) userDetails;
+            if(userD.getId().equals(user.getId())) {
+                userD.setUsername(user.getUsername());
+            }
+            repository.save(user);
+        }
+    }
+
+    public void updateToken(User user) {
+        user.setToken(UUID.randomUUID());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User userD = (User) userDetails;
+        if(userD.getId().equals(user.getId())) {
+            userD.setToken(user.getToken());
+        }
+        repository.save(user);
+    }
+
+    public User getUserByToken(UUID token) {
+        User user = repository.findByToken(token).
+                orElseThrow(() -> new IllegalArgumentException("User with token " + token + " not found"));
+        if(!user.isEnabled()) {
+            throw new IllegalArgumentException("User with token " + token + " is disable");
+        }
+        return user;
     }
 }

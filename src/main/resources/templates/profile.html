@@ -52,6 +52,14 @@ and open the template in the editor.
                            th:errors="*{username}"></small>
                 </div>
                 <div class="form-outline mb-4">
+                    <label class="form-label" for="username">token</label>
+                    <input type="text" id="token" name="token" th:field="*{token}" readonly="readonly"
+                           class="form-control form-control-lg"
+                           placeholder="Enter a valid token"/>
+                    <small class="dangealert alert-danger" th:if="${#fields.hasErrors('token')}"
+                           th:errors="*{token}"></small>
+                </div>
+                <div class="form-outline mb-4">
                     <label class="form-label" for="password">Password</label>
                     <input type="password" id="password" name="password" class="form-control form-control-lg"
                            placeholder="Enter password"/>
