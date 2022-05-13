@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,7 +78,7 @@ public class MessageController {
                 pageNumbers = IntStream.rangeClosed((p - 3), totalPages).boxed().collect(Collectors.toList());
                 pageNumbers.add(0, -1);
                 pageNumbers.add(0, 1);
-            } else  {
+            } else {
                 pageNumbers = IntStream.rangeClosed((p - 3), p + 3).boxed().collect(Collectors.toList());
                 pageNumbers.add(-1);
                 pageNumbers.add(totalPages);
@@ -93,6 +94,13 @@ public class MessageController {
     @ResponseBody
     public String lastID(@AuthenticationPrincipal User user) {
         return service.getLastID(user).toString();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("remove")
+    public String messageRemove(@AuthenticationPrincipal User user, @RequestParam(name = "messageId") Long id) {
+        service.removeMessage(id);
+        return "redirect:/form";
     }
 
     @GetMapping(value = "file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

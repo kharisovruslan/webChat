@@ -111,4 +111,8 @@ public class MessageService {
             return new StatisticsUser((User) a[0], 0, (Long) a[1]);
         }).sorted().collect(Collectors.toList());
     }
+
+    public void removeMessage(Long id) {
+        messageRepository.deleteById(id);
+    }
 }
