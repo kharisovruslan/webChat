@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
@@ -113,6 +114,15 @@ public class MessageService {
     }
 
     public void removeMessage(Long id) {
+        Optional<Message> msg = messageRepository.findById(id);
+        String fileName = msg.get().getFileName();
+        if(StringUtils.hasText(fileName)) {
+            File parent = new File(uploadFolder);
+            File file = new File(parent, fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
         messageRepository.deleteById(id);
     }
 }

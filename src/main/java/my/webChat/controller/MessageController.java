@@ -98,8 +98,8 @@ public class MessageController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("remove")
-    public String messageRemove(@AuthenticationPrincipal User user, @RequestParam(name = "messageId") Long id) {
-        service.removeMessage(id);
+    public String messageRemove(@AuthenticationPrincipal User user, @RequestParam(name = "messageid") Long messageid) {
+        service.removeMessage(messageid);
         return "redirect:/form";
     }
 

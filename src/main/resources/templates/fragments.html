@@ -5,7 +5,8 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <meta charset="UTF-8"/>
@@ -16,7 +17,7 @@ and open the template in the editor.
 <div th:fragment="users" th:unless="${users.isEmpty()}" id="usersFragment">
     <table>
         <tbody>
-        <tr th:each = " u : ${users}">
+        <tr th:each=" u : ${users}">
             <td th:text="${u}"></td>
             <td><input type="checkbox" name="receivers"/></td>
         </tr>
@@ -34,29 +35,16 @@ and open the template in the editor.
         </li>
     </ul>
     <div th:each="m : ${pageMessages.content}">
-        <!-- outcomming message -->
-        <div class="message card mb-2" style="background-color: lavender;" th:if="${m.author.id == userId}">
+        <div class="message card mb-2"
+             th:style="${m.author.id == userId} ? 'background-color: lavender;' : 'background-color: antiquewhite;'">
             <div class="card-body">
-                <h6 class="card-title mb-0 fw-bold">
-                    <span th:text="${m.author.username}"></span>
-                    <span th:text="'at ' + ${#temporals.format(m.create, 'dd-MM-yyyy HH:mm')}"></span>
-                </h6>
-                <ul class="card-subtitle mb-0 list-inline text-secondary">
-                    <th:block th:each="receiver : ${m.receivers}">
-                        <li class="list-inline-item" th:text="${receiver.username}"></li>
-                    </th:block>
-                </ul>
-                <p th:utext="${m.text}" class="card-text"></p>
-                <div tH:if="${!m.fileName.isEmpty()}">
-                    <a th:text="${m.fileOrigName + '(' + m.fileSize + ')'}"
-                       th:href="@{messages/file(uuid=${m.fileName}, fileName=${m.fileOrigName})}"></a>
-                </div>
-            </div>
-        </div>
-        <!-- incomming message -->
-        <div class="message card mb-2" style="background-color: antiquewhite;" th:if="${m.author.id != userId}">
-            <div class="card-body">
-                <h6 class="card-title mb-0 fw-bold">
+                <span sec:authorize="hasAuthority('ADMIN')">
+                    <form method="post" th:action="@{/messages/remove}">
+                        <input type="hidden" id="messageid" name="messageid" th:value="${m.id}"/>
+                        <button class="float-end btn-sm btn-danger" type="submit">X</button>
+                    </form>
+                </span>
+                <h6 class="card-title mb-0 fw-bold d-inline">
                     <span th:text="${m.author.username}"></span>
                     <span th:text="'at ' + ${#temporals.format(m.create, 'dd-MM-yyyy HH:mm')}"></span>
                 </h6>
