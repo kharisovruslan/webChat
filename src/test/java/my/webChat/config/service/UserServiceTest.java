@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 
@@ -59,5 +61,18 @@ class UserServiceTest {
                 "Error waitable exception UsernameNotFoundException");
         userRepository.deleteAll();
         Assertions.assertEquals(0, userRepository.findAll().size());
+    }
+    @Test
+    void updateVisitedTest() {
+        User u1 = new User("user", "passwordUser");
+        u1.setRoles(Collections.singleton(Role.USER));
+        User su1 = userRepository.save(u1);
+        Assertions.assertNull(su1.getVisited());
+        int dayOfYear = LocalDateTime.now().getDayOfYear();
+        userService.updateVisited(su1);
+        su1 = userRepository.findById(su1.getId()).get();
+        Assertions.assertNotNull(su1.getVisited());
+        Assertions.assertEquals(dayOfYear, su1.getVisited().getDayOfYear());
+        userRepository.deleteAll();
     }
 }

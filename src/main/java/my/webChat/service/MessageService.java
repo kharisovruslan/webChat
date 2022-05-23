@@ -64,7 +64,7 @@ public class MessageService {
     public String getLastTime(User user) {
         return messageRepository.findFirstByReceiversOrderByCreateDesc(user)
                 .map(Message::getCreate)
-                .orElse(LocalDateTime.now()).format(dateTimeFormatter);
+                .orElse(LocalDateTime.of(2020, 01, 01, 0, 0)).format(dateTimeFormatter);
     }
 
     public List<Message> getUserMessagesAfter(User user, String afterTime) {

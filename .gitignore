@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 database/
+logs/
 
 derby.log
 .mvn

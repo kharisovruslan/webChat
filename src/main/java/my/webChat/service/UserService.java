@@ -47,8 +47,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateVisited(User user) {
-        user.setVisited(LocalDateTime.now());
-        repository.save(user);
+        repository.updateVisitedDateTime(user.getId(), LocalDateTime.now());
     }
 
     public void updatePassword(User user, String password) {
