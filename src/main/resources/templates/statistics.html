@@ -51,28 +51,31 @@ and open the template in the editor.
                 <tbody>
                 <tr th:each="s : ${statistics}">
                     <td>
-                        <form action="/users/changeUserName" method="post">
+                        <form th:action="@{/users/changeUserName}"
+                              th:classappend="${(online.contains(s.user)) ? 'border border-success' : ''}"
+                              method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <input type="hidden" id="useridCUN" name="useridCUN" th:value="${s.user.id}"/>
-                            <input type="text" id="usernameCUN" name="usernameCUN" th:value="${s.user.username}"/>
+                            <input type="text" id="usernameCUN" class="form-control"
+                                   name="usernameCUN" th:value="${s.user.username}"/>
                             <input type="submit" th:value="#{button_send}"/>
                         </form>
                     </td>
                     <td th:text="${s.write}"></td>
                     <td th:text="${#temporals.format(s.user.visited, 'dd-MM-yyyy HH:mm')}"></td>
                     <td>
-                        <form action="/users/changeToken" method="post">
+                        <form th:action="@{/users/changeToken}" method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <input type="hidden" id="useridCT" name="useridCT" th:value="${s.user.id}"/>
-                            <input type="text" id="tokenCT" name="tokenCT" readonly="readonly" th:value="${s.user.token}"/>
+                            <input type="text" id="tokenCT" name="tokenCT" class="form-control" readonly="readonly" th:value="${s.user.token}"/>
                             <input type="submit" th:value="#{button_send}"/>
                         </form>
                     </td>
                     <td>
-                        <form action="/users/changePassword" method="post">
+                        <form th:action="@{/users/changePassword}" method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <input type="hidden" id="useridCP" name="useridCP" th:value="${s.user.id}"/>
-                            <input type="password" id="passwordCP" name="passwordCP"/>
+                            <input type="password" id="passwordCP" class="form-control" name="passwordCP"/>
                             <input type="submit" th:value="#{button_send}"/>
                         </form>
                     </td>

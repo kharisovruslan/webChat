@@ -2,6 +2,7 @@ package my.webChat.controller;
 
 import my.webChat.data.Message;
 import my.webChat.data.User;
+import my.webChat.service.ActiveUser;
 import my.webChat.service.MessageService;
 import my.webChat.service.UserService;
 import org.slf4j.Logger;
@@ -30,6 +31,9 @@ public class WebChatController {
     MessageService service;
     @Autowired
     UserService userService;
+
+    @Autowired
+    ActiveUser activeUser;
 
     private static final Logger log = LoggerFactory.getLogger(MessageController.class);
 
@@ -79,6 +83,7 @@ public class WebChatController {
         model.addAttribute("users", userService.getUsers(user));
         model.addAttribute("filter", f);
         model.addAttribute("msg", msg);
+        model.addAttribute("online", activeUser.getUsers());
         return "form";
     }
 
@@ -86,6 +91,7 @@ public class WebChatController {
     @GetMapping("statistics")
     public String getStatistics(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("statistics", service.getStatisticsSendMessages());
+        model.addAttribute("online", activeUser.getUsers());
         return "statistics";
     }
 }

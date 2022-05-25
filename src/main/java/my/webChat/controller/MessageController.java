@@ -2,6 +2,7 @@ package my.webChat.controller;
 
 import my.webChat.data.Message;
 import my.webChat.data.User;
+import my.webChat.service.ActiveUser;
 import my.webChat.service.MessageService;
 import my.webChat.service.UserService;
 import org.slf4j.Logger;
@@ -37,9 +38,11 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping("messages")
 public class MessageController {
-
     @Autowired
     MessageService service;
+
+    @Autowired
+    ActiveUser activeUser;
 
     @Autowired
     UserService userService;
@@ -62,6 +65,7 @@ public class MessageController {
             pageMessages = service.findAuthorMessageOrMessageForUser(user, PageRequest.of(p - 1, s), f);
         }
         userService.updateVisited(user);
+        activeUser.updateUser(user);
         model.addAttribute("userId", user.getId());
         model.addAttribute("filter", f);
         model.addAttribute("pageMessages", pageMessages);
@@ -93,6 +97,7 @@ public class MessageController {
     @GetMapping("lastId")
     @ResponseBody
     public String lastID(@AuthenticationPrincipal User user) {
+        activeUser.updateUser(user);
         return service.getLastID(user).toString();
     }
 

@@ -51,8 +51,10 @@ and open the template in the editor.
         <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="alert-danger"/>
         <ul id="receiversCheckBox" class="list-inline border">
           <li class="list-inline-item" th:each="u : ${users}">
-            <span th:text="${u.username}"></span>
-            <span><input type="checkbox" th:value="${u.id}" name="receivers"/></span>
+            <div th:classappend="${(online.contains(u)) ? 'text-success border border-success' : 'text-dark border border-danger'}">
+              <span th:attr="title=${(u.visited==null) ? '' : 'was here: ' + #temporals.format(u.visited, 'dd-MM-yyyy HH:mm')}" th:text="${u.username}"></span>
+              <span><input type="checkbox" th:value="${u.id}" name="receivers"/></span>
+            </div>
           </li>
         </ul>
         <small id="receiversHelp" class="form-text text-danger"></small>

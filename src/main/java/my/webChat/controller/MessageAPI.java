@@ -3,6 +3,7 @@ package my.webChat.controller;
 import my.webChat.data.Message;
 import my.webChat.data.User;
 import my.webChat.data.dto.UserMessage;
+import my.webChat.service.ActiveUser;
 import my.webChat.service.MessageService;
 import my.webChat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,16 @@ public class MessageAPI {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ActiveUser activeUser;
+
     @Resource(name="authenticationManager")
     private AuthenticationManager authManager;
 
     @PostMapping(value = "last", produces = "text/plain")
     public String getLast(@RequestParam("token") String token) {
         User user = userService.getUserByToken(UUID.fromString(token));
+        activeUser.updateUser(user);
         return messageService.getLastTime(user);
     }
 
@@ -62,6 +67,7 @@ public class MessageAPI {
     @PostMapping(value = "messagesafter", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserMessage> getMessages(@RequestParam("token") String token, @RequestParam("last") String afterTime) {
         User user = userService.getUserByToken(UUID.fromString(token));
+        activeUser.updateUser(user);
         return messageService.getUserMessagesAfter(user, afterTime).stream()
                 .map(m -> new UserMessage(m.getText(), m.getCreate(), m.getAuthor().getUsername()))
                 .collect(Collectors.toList());
