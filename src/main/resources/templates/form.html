@@ -44,15 +44,15 @@ and open the template in the editor.
 
       <form class="border border-success" id="messageForm" th:action="@{/form}" method="post" th:object="${msg}" enctype="multipart/form-data">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <div>
+        <div class="mt-2 mb-2">
           <input type="text" id="filter" th:value="${filter}" class="form-control"
-                 placeholder="Enter filter to find"/>
+                 th:attr="placeholder=#{label_text_find}"/>
         </div>
         <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="alert-danger"/>
         <ul id="receiversCheckBox" class="list-inline border">
           <li class="list-inline-item" th:each="u : ${users}">
             <div th:classappend="${(online.contains(u)) ? 'text-success border border-success' : 'text-dark border border-danger'}">
-              <span th:attr="title=${(u.visited==null) ? '' : 'was here: ' + #temporals.format(u.visited, 'dd-MM-yyyy HH:mm')}" th:text="${u.username}"></span>
+              <span th:attr="title=${(u.visited==null) ? '' : #temporals.format(u.visited, 'dd-MM-yyyy HH:mm')}" th:text="${u.username}"></span>
               <span><input type="checkbox" th:value="${u.id}" name="receivers"/></span>
             </div>
           </li>
