@@ -13,7 +13,16 @@ with javascript from server. Every 15 seconds web page check if where a new mess
 Application is pageable on page show five message if there more messages then you can choose page. 
 Use localization all you languages.
 
-![Application window](./src/test/resources/)
+![Application window](./src/test/resources/images/Frame.png)
+![Application window](./src/test/resources/images/Frame1.png)
+![Application window](./src/test/resources/images/login.png)
+![Application window](./src/test/resources/images/regsiteration.png)
+![Application window](./src/test/resources/images/registrationShortPassword.png)
+![Application window](./src/test/resources/images/registrationExistUserName.png)
+![Application window](./src/test/resources/images/Profile.png)
+![Application window](./src/test/resources/images/Search.png)
+![Application window](./src/test/resources/images/Statistics.png)
+
 ## Features
  + Exchange messages
  + Save date last visited user if you cursor over username you can see date of last visit user
